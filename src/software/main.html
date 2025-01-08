@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Health Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        main {
+            padding: 1rem;
+        }
+        .card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .card h2 {
+            margin: 0 0 0.5rem;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Cat Health Dashboard</h1>
+    </header>
+    <main>
+        <div class="card">
+            <h2>Food Consumption</h2>
+            <p>Today's consumption: <span id="food-consumption">0</span> grams</p>
+        </div>
+        <div class="card">
+            <h2>Water Intake</h2>
+            <p>Today's water intake: <span id="water-intake">0</span> ml</p>
+        </div>
+        <div class="card">
+            <h2>Weight</h2>
+            <p>Current weight: <span id="cat-weight">0</span> kg</p>
+        </div>
+    </main>
+
+    <script>
+        // Sample data for demonstration
+        const data = {
+            foodConsumption: 50, // in grams
+            waterIntake: 200,   // in ml
+            catWeight: 4.5      // in kg
+        };
+
+        // Update dashboard with data
+        document.getElementById('food-consumption').textContent = data.foodConsumption;
+        document.getElementById('water-intake').textContent = data.waterIntake;
+        document.getElementById('cat-weight').textContent = data.catWeight;
+
+        // You can extend this script to fetch live data from a backend or sensor
+    </script>
+</body>
+</html>
