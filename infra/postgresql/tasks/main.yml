@@ -1,0 +1,35 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: Define Postgres data path
+  ansible.builtin.file:
+    path: "{{ postgresql_src_path }}"
+    state: directory
+    recurse: yes
+    owner: "{{ psql_user }}"
+    group: "{{ psql_user }}"
+
+- name: Define Postgres container vol path
+  ansible.builtin.file:
+    path: "{{ postgresql_dest_path }}"
+    state: directory
+    recurse: yes
+    owner: "{{ psql_user }}"
+    group: "{{ psql_user }}"
+
+- name: Define Postgres service path
+  ansible.builtin.file:
+    path: "{{ postgresql_service_path }}"
+    state: directory
+    recurse: yes
+    owner: "{{ psql_user }}"
+    group: "{{ psql_user }}"
+
+- name: Generate docker-compose
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ postgresql_service_path }}/docker_compose.yml"
+
+- name: Up psql sgbd container
+  ansible.builtin.command:
+    cmd: "docker compose -f {{ postgresql_service_path }}/docker_compose.yml up -d"
+
