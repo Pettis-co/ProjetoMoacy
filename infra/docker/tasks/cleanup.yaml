@@ -1,0 +1,8 @@
+---
+- name: Cleaning up images, containers, and volumes
+  ansible.builtin.file:
+    state: absent
+    path: "{{ item }}"
+  with_items:
+    - /var/lib/docker
+    - /var/lib/containerd

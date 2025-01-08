@@ -1,0 +1,36 @@
+---
+- name: Define NGINX configs path
+  ansible.builtin.file:
+    path: "{{ nginx_configs_path }}"
+    state: directory
+    recurse: yes
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_user }}"
+
+- name: Define NGINX certs path
+  ansible.builtin.file:
+    path: "{{ nginx_certs_path }}"
+    state: directory
+    recurse: yes
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_user }}"
+
+- name: Send certs to host
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/"
+    dest: "{{ nginx_certs_path }}"
+
+- name: Generate nginx.conf file
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: "{{ nginx_configs_path }}/nginx.conf"
+
+- name: Generate docker-compose
+  ansible.builtin.template:
+    src: docker-compose.yaml.j2
+    dest: "{{ nginx_service_path }}/docker-compose.yaml"
+
+- name: Up all services
+  ansible.builtin.command:
+    cmd: "docker compose -f {{ nginx_service_path }}/docker-compose.yaml up -d"
+  register: output

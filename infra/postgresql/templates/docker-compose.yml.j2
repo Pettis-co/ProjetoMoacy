@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  postgres:
+    image: "{{ postgres_image }}" 
+    container_name: postgresql
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "{{ postgresql_passwd }}"
+      POSTGRES_USER: "{{ postgresql_user }}"
+    ports:
+      - 19142:5432
+    volumes:
+      - "{{ postgresql_src_path }}:{{ postgresql_dest_path }}"

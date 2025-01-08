@@ -1,0 +1,15 @@
+---
+# Globals
+nginx_service_path: /services/nginx
+# NGINX
+nginx_user: 1000
+nginx_container_name: nginx
+nginx_image: nginx:latest
+nginx_certs_path: "{{ nginx_service_path }}/certs"
+nginx_configs_path: "{{ nginx_service_path }}/configs"
+
+services:
+  - name: hivemq.lsd.ufcg.edu.br
+    cert_path: "{{ nginx_certs_path }}/lsd.crt.gpg"
+    cert_key_path: "{{ nginx_certs_path }}/lsd.key.gpg"
+    port: 8081

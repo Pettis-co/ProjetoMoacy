@@ -1,0 +1,32 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: Define HiveMQ configs path
+  ansible.builtin.file:
+    path: "{{ hivemq_service_path }}"
+    state: directory
+    recurse: yes
+    owner: "{{ hivemq_user }}"
+    group: "{{ hivemq_user }}"
+
+- name: Define HiveMQ certs path
+  ansible.builtin.file:
+    path: "{{ hivemq_certs_path }}"
+    state: directory
+    recurse: yes
+    owner: "{{ hivemq_user }}"
+    group: "{{ hivemq_user }}"
+
+- name: Send certs to host
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files"
+    dest: "{{ hivemq_certs_path }}"
+
+- name: Generate docker-compose
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ hivemq_service_path }}/docker_compose.yml"
+
+- name: Up services
+  ansible.builtin.command:
+    cmd: "docker compose -f {{ hivemq_service_path }}/docker_compose.yml up -d"
+  register: output

@@ -1,0 +1,12 @@
+version: '3'
+services:
+  nginx:
+    container_name: {{ nginx_container_name }}
+    image: {{ nginx_image }}
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - {{ nginx_configs_path }}/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
+      - {{ nginx_certs_path }}:{{ nginx_certs_path }}

@@ -1,0 +1,6 @@
+#SPDX-License-Identifier: MIT-0
+---
+hivemq_service_path: "/services/hivemq"
+hivemq_user: 1000
+hivemq_certs_path: "{{ hivemq_service_path }}/certs"
+
