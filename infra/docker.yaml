@@ -1,0 +1,6 @@
+---
+- name: Setup and configure Docker engine
+  become: true
+  hosts: hivemq.lsd.ufcg.edu.br
+  roles:
+    - role: docker

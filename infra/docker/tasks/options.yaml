@@ -1,0 +1,12 @@
+---
+- import_tasks: uninstall.yaml
+  tags:
+    - uninstall
+
+- import_tasks: install.yaml
+  tags:
+    - install
+
+- import_tasks: cleanup.yaml
+  tags:
+    - cleanup
