@@ -32,6 +32,30 @@
             margin: 0 0 0.5rem;
             color: #007bff;
         }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .form-group button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -40,33 +64,78 @@
     </header>
     <main>
         <div class="card">
-            <h2>Food Consumption</h2>
-            <p>Today's consumption: <span id="food-consumption">0</span> grams</p>
-        </div>
-        <div class="card">
-            <h2>Water Intake</h2>
-            <p>Today's water intake: <span id="water-intake">0</span> ml</p>
-        </div>
-        <div class="card">
-            <h2>Weight</h2>
-            <p>Current weight: <span id="cat-weight">0</span> kg</p>
+            <h2>Time to Eat</h2>
+            <form id="feeding-form">
+                <div class="form-group">
+                    <label for="feeding-time">Set Feeding Time:</label>
+                    <input type="text" id="feeding-time" placeholder="HH:MM (e.g., 18:00)" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Set Time</button>
+                </div>
+            </form>
+            <p>Current Feeding Time: <span id="current-feeding-time">Not Set</span></p>
         </div>
     </main>
 
     <script>
-        // Sample data for demonstration
-        const data = {
-            foodConsumption: 50, // in grams
-            waterIntake: 200,   // in ml
-            catWeight: 4.5      // in kg
-        };
+        // Atualizar o horário no dashboard
+        async function fetchFeedingTime() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/pet/time');
+                if (!response.ok) {
+                    throw new Error(`Erro ao buscar dados: ${response.statusText}`);
+                }
+                const data = await response.json();
 
-        // Update dashboard with data
-        document.getElementById('food-consumption').textContent = data.foodConsumption;
-        document.getElementById('water-intake').textContent = data.waterIntake;
-        document.getElementById('cat-weight').textContent = data.catWeight;
+                // Atualiza o horário atual exibido
+                const currentFeedingTime = data.feeding_time || 'Not Set';
+                document.getElementById('current-feeding-time').textContent = data.feeding_time;
+                
 
-        // You can extend this script to fetch live data from a backend or sensor
+            } catch (error) {
+                console.error('Erro ao buscar horário:', error);
+            }
+        }
+
+        // Enviar horário definido pelo usuário para a API
+        async function sendFeedingTime(time) {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/pet/time', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ feeding_time: time }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro ao enviar horário: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                console.log('Horário enviado com sucesso:', result);
+
+                // Atualiza o horário atual após o envio
+                fetchFeedingTime();
+            } catch (error) {
+                console.error('Erro ao enviar horário:', error);
+            }
+        }
+
+        // Capturar envio do formulário
+        document.getElementById('feeding-form').addEventListener('submit', (event) => {
+            event.preventDefault(); // Impede o recarregamento da página
+
+            // Obtém o horário inserido pelo usuário
+            const feedingTime = document.getElementById('feeding-time').value;
+
+            // Envia o horário para a API
+            sendFeedingTime(feedingTime);
+        });
+
+        // Atualizar o horário ao carregar a página
+        document.addEventListener('DOMContentLoaded', fetchFeedingTime);
     </script>
 </body>
 </html>
