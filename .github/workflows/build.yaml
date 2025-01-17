@@ -1,8 +1,11 @@
 name: Test build of the api
 
 on:
-  pull_request:
-    types: [opened, closed, ready_for_review]
+  push:
+    branches:
+      - infra
+      - software
+
 
 jobs:
   check-build:
