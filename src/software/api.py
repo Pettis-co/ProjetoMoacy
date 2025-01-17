@@ -1,4 +1,5 @@
-from flask import Flask, jsonify, request
+import threading
+from flask import Flask, json, jsonify, request
 import paho.mqtt.client as mqtt
 from flask_cors import CORS
 
@@ -9,7 +10,6 @@ USERNAME = ''
 PASSWORD = ''
 PORT = 1883
 
-client = mqtt.Client()
 
 topics = {
     'client': {
@@ -28,19 +28,24 @@ data_store = {
     "feeding_time": None  
 }
 
+
 def on_connect(client, userdata, flags, rc):
     print(f"Conectado com código de retorno: {rc}")
-    client.subscribe("testeplaca")
 
 # Função de callback para recebimento de mensagens
 def on_message(client, userdata, msg):
     print(f"Tópico: {msg.topic}, Mensagem: {msg.payload.decode()}")
-    client.publish("teste", "AAAA")
-    
-client.on_connect = on_connect
-client.on_message = on_message
+    client.publish("teste", "teste da api")
 
-client.connect(BROKER, PORT)
+mqtt_client = mqtt.Client()
+mqtt_client.on_connect = on_connect
+mqtt_client.on_message = on_message
+
+mqtt_client.connect(BROKER)
+
+
+
+# Start the MQTT client in a separate thread
 
 # @app.route('/teste', methods=['GET'])
 # def teste():
@@ -49,7 +54,7 @@ client.connect(BROKER, PORT)
 
 @app.route('/', methods=['GET'])
 def init():
-    client.publish("teste", '{"message": "Hello, World!"}')
+    mqtt_client.publish("teste", '{"message": "Hello, World!"}')
     return jsonify({"message": "Hello, World!"})
 
 @app.route('/pet/information', methods=['GET', 'POST'])
@@ -68,7 +73,9 @@ def setAnimalMedicalHistory():
 def timeToEat():
     if request.method == 'GET':
         if data_store["feeding_time"]:
-            client.publish("teste", data_store["feeding_time"])
+            json_data = json.dumps(data_store)
+
+            mqtt_client.publish("pet/time", json_data)
             return jsonify({'status': 'success', 'feeding_time': data_store["feeding_time"]})
         else:
             return jsonify({'status': 'success', 'message': 'Feeding time not set yet'})
@@ -86,16 +93,19 @@ def timeToEat():
 def openTheDoor():
     if request.method == 'GET':
         return jsonify({'status': 'success', 'message': 'GET request received'})
+
     elif request.method == 'POST':
         data = request.json
-        return jsonify({'status': 'success', 'data': data})
+        json_data = json.dumps(data)
 
-@app.route('/api/v1/add', methods=['POST'])
-def add():
-    data = request.get_json() 
-    x = data.get('x')
-    y = data.get('y')
-    return jsonify({"result": x + y})
+        mqtt_client.publish("pet/feed", json_data)
+        if 'feed_now' in data and data['feed_now']:
+            print("Comando recebido: Alimentar agora!")
+            return jsonify({'status': 'success', 'message': 'Comando recebido para alimentar agora'})
+        else:
+            return jsonify({'status': 'error', 'message': 'Comando inválido ou ausente'}), 400
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8082)
+    app.run(host='0.0.0.0', port=24300)
+    mqtt_client.loop_forever()
+ 
