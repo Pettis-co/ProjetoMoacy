@@ -1,0 +1,8 @@
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: $(DOCKER_TAG)
+    ports:
+      - 24300:5000

@@ -106,5 +106,6 @@ def openTheDoor():
             return jsonify({'status': 'error', 'message': 'Comando inválido ou ausente'}), 400
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=24300)
     mqtt_client.loop_forever()
+ 
