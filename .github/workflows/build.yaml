@@ -25,7 +25,4 @@ jobs:
 
       - name: Run flask application
         run: | 
-          export FLASK_APP=api.py
-          export FLASK_RUN_HOST=0.0.0.0
-          cd src/software
-          flask run
+          pytest src/software
