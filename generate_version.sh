@@ -8,8 +8,6 @@ VERSION=$(cat version.txt || echo "1")
 IMAGE_NAME="local/petis.co"
 CURRENT_VERSION= $IMAGE_NAME:v0.$VERSION 
 
-docker build -t $CURRENT_VERSION .
-
 #increments the version counter
 echo $((VERSION + 1)) > version.txt
 
