@@ -4,9 +4,13 @@
 
 #!/bin/bash
 
-VERSION=$(cat version.txt || echo "1")
+if [ -f version.txt ]; then
+	VERSION=$(cat version.txt)
+    else
+	VERSION="1"
+fi
 IMAGE_NAME="local/petis.co"
-CURRENT_VERSION= $IMAGE_NAME:v0.$VERSION 
+CURRENT_VERSION=$IMAGE_NAME:v0.$VERSION 
 
 #increments the version counter
 echo $((VERSION + 1)) > version.txt
