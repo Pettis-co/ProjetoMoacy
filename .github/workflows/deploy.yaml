@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-      - infra
-
 jobs:
   self-hosted:
     runs-on: self-hosted
