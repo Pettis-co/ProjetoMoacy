@@ -16,5 +16,5 @@ jobs:
     - name: Generate docker tag
       run: |
         chmod +x generate_version.sh
-        export DOCKER_TAG=$(./generate_version.sh)
+        export DOCKER_TAG=$(/bin/bash generate_version.sh)
         docker compose up -d
