@@ -16,7 +16,4 @@ CURRENT_VERSION=$IMAGE_NAME:v0.$VERSION
 #increments the version counter
 echo $((VERSION + 1)) > version.txt
 
-docker rmi -f $IMAGE_NAME:v0.$((VERSION - 1)) 2> /dev/null
-docker rm -f $IMAGE_NAME:v0.$((VERSION - 1)) 2> /dev/null
-
 echo "DOCKER_TAG=$CURRENT_VERSION" > .env
