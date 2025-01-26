@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-
 jobs:
   self-hosted:
     runs-on: self-hosted
@@ -16,5 +15,5 @@ jobs:
     - name: Generate docker tag
       run: |
         chmod +x generate_version.sh
-        export DOCKER_TAG=$(/bin/bash generate_version.sh)
+        /bin/bash generate_version.sh
         docker compose up -d
