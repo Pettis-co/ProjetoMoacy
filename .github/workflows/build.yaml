@@ -1,0 +1,28 @@
+name: Test build of the api
+
+on:
+  push:
+    branches:
+      - infra
+      - software
+
+
+jobs:
+  check-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Set up libs
+        run: python -m pip install -r requirements.txt
+
+      - name: Run flask application
+        run: | 
+          pytest src/software

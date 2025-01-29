@@ -1,0 +1,9 @@
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: "${DOCKER_TAG}"
+    container_name: pettisco_api 
+    ports:
+      - 24300:5000

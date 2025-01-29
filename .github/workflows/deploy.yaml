@@ -1,0 +1,19 @@
+name: Build image and deploy application
+
+on: 
+  push:
+    branches:
+      - main
+jobs:
+  self-hosted:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Generate docker tag
+      run: |
+        chmod +x generate_version.sh
+        /bin/bash generate_version.sh
+        docker compose up -d
