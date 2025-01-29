@@ -9,6 +9,7 @@ BROKER = '150.165.85.30'
 USERNAME = ''
 PASSWORD = ''
 PORT = 1883
+TOPICO = "teste"
 
 
 topics = {
@@ -29,28 +30,28 @@ data_store = {
 }
 
 
-def on_connect(client, userdata, flags, rc):
-    print(f"Conectado com código de retorno: {rc}")
-
-# Função de callback para recebimento de mensagens
-def on_message(client, userdata, msg):
-    print(f"Tópico: {msg.topic}, Mensagem: {msg.payload.decode()}")
-    client.publish("teste", "teste da api")
-
 mqtt_client = mqtt.Client()
+
+def on_connect(client, userdata, flags, rc):
+    print("Conectado ao broker com código de resultado:", rc)
+    client.subscribe(TOPICO)
+
+def on_message(client, userdata, msg):
+    print(f"Mensagem recebida: {msg.topic} -> {msg.payload.decode()}")
+
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
 
-mqtt_client.connect(BROKER)
+# Função para rodar o loop MQTT em uma thread separada
+def run_mqtt():
+    mqtt_client.connect(BROKER)
+    mqtt_client.loop_forever()
 
+# Iniciando a thread MQTT
+mqtt_thread = threading.Thread(target=run_mqtt)
+mqtt_thread.daemon = True
+mqtt_thread.start()
 
-
-# Start the MQTT client in a separate thread
-
-# @app.route('/teste', methods=['GET'])
-# def teste():
-#     client.publish("teste", '{"message": "Hello, World!"}')
-#     return jsonify({"message": "Hello, World!"})
 
 @app.route('/', methods=['GET'])
 def init():
