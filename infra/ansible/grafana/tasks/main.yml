@@ -1,0 +1,35 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: Define Grafana data path
+  ansible.builtin.file:
+    path: "{{ grafana_service_path }}"
+    state: directory
+    recurse: yes
+    owner: "{{ grafana_user }}"
+    group: "{{ grafana_user }}"
+
+- name: Define Grafana container vol path
+  ansible.builtin.file:
+    path: "{{ grafana_dest_path }}"
+    state: directory
+    recurse: yes
+    owner: "{{ grafana_user }}"
+    group: "{{ grafana_user }}"
+
+- name: Define Grafana service path
+  ansible.builtin.file:
+    path: "{{ grafana_service_path }}"
+    state: directory
+    recurse: yes
+    owner: "{{ grafana_user }}"
+    group: "{{ grafana_user }}"
+
+- name: Generate docker-compose
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ grafana_service_path }}/docker_compose.yml"
+
+- name: Up grafana container
+  ansible.builtin.command:
+    cmd: "docker compose -f {{ grafana_service_path }}/docker_compose.yml up -d"
+
