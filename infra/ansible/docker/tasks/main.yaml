@@ -8,6 +8,10 @@
     state: present
     update_cache: true
 
+- name: Install keyrings
+  ansible.builtin.command:
+    cmd: sudo install -m 0755 -d /etc/apt/keyrings
+
 - name: Get docker keyrings
   ansible.builtin.get_url:
     url: https://download.docker.com/linux/ubuntu/gpg

@@ -1,0 +1,6 @@
+---
+grafana_image: "grafana/grafana:11.5.0-ubuntu"
+grafana_service_path: "/services/grafana"
+grafana_dest_path: "/var/lib/docker/volumes/grafana"
+grafana_user: "1000"
+
