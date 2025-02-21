@@ -1,0 +1,13 @@
+FROM node:18.20-bullseye
+
+WORKDIR /usr/src/app
+
+EXPOSE 3000
+
+COPY ./src/software/public/react-auth-dashboard/ .
+
+RUN npm install
+
+WORKDIR /usr/src/app/src
+
+CMD npm start 

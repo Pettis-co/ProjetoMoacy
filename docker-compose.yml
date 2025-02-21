@@ -2,8 +2,15 @@ services:
   api:
     build: 
       context: .
-      dockerfile: Dockerfile
-    image: "${DOCKER_TAG}"
+      dockerfile: Dockerfile-api
+    image: "api-${DOCKER_TAG}"
     container_name: pettisco_api 
     ports:
       - 24300:5000
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile-frontend
+    image: "frontend-${DOCKER_TAG}"
+    ports:
+      - 15786:3000
