@@ -25,4 +25,4 @@ jobs:
 
       - name: Run flask application
         run: | 
-          pytest src/software
+          pytest src/software/test/

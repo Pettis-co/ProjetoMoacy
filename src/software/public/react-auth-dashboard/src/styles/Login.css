@@ -1,0 +1,101 @@
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza a logo e o nome */
+    flex: 1; /* Ocupa espaço proporcional */
+}
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; 
+    background-color: #8a725d;
+}
+  
+.logo {
+    width: 250px;
+    height: auto;
+}
+
+  
+.company-name {
+    font-size: 70px;
+    font-weight: bold;
+    color: #8a725d;
+    margin-top: 10px;
+}
+
+.login-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+.parent-container {
+    background-color: #E5BDA2;
+    width: 100vw;
+    height: 100vh; /* Faz com que o container ocupe toda a tela */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 80px;
+    box-sizing: border-box; /* Evita que padding afete o tamanho total */
+}
+
+.input-group {
+  margin-bottom: 15px;
+  width: 100%;
+  text-align: left;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+}
+  
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+  
+  
+.login-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #8a725d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+  
+.login-button:hover {
+    background-color: #a6765f;
+}
+  
+.social-login {
+    margin-top: 20px;
+}
+  
+.signup-link {
+    margin-top: 15px;
+}
+  
+.signup-link a {
+    color: #8a725d;
+    text-decoration: none;
+}
+  
+.signup-link a:hover {
+    text-decoration: underline;
+}
