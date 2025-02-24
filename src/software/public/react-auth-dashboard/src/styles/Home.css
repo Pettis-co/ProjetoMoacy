@@ -1,0 +1,111 @@
+.card {
+    padding: 20px;
+    background-color: #efefef;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.info-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    text-align: center;
+    color:#e0925c
+}
+
+.chart-section {
+    margin-bottom: 20px;
+}
+
+.chart-labels {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+}
+
+.chart {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 150px;
+    background-color: #e0e0e0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.chart-bar {
+    width: 20px;
+    background-color: #0097b2;
+    margin: 0 5px;
+    border-radius: 3px;
+}
+
+.chart-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.button {
+    background-color: #0097b2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #47bace;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #0097b2;
+    color: white;
+    border-radius: 10px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.pet-avatar {
+    padding: 8px 8px;
+}
+
+.pet-info h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.pet-info p, h1 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #e0925c;
+}
+
+.logout-button {
+    background-color: #e0925c;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    background-color: #e0a174;
+}
