@@ -5,14 +5,20 @@
   "dependencies": {
     "@googleapis/docs": "^3.3.0",
     "@react-oauth/google": "^0.12.1",
+    "buffer": "^6.0.3",
     "cra-template": "1.2.0",
+    "crypto-browserify": "^3.12.1",
     "googleapis": "^144.0.0",
-    "jwt-decode": "^4.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^3.1.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-oauth2-code-pkce": "^1.22.2",
     "react-router-dom": "^7.1.3",
     "react-scripts": "^5.0.1",
+    "recharts": "^2.15.1",
+    "stream-browserify": "^3.0.0",
+    "util": "^0.12.5",
     "web-vitals": "^4.2.4"
   },
   "scripts": {
@@ -39,9 +45,15 @@
       "last 1 safari version"
     ]
   },
+  "browser": {
+    "buffer": false,
+    "crypto": false,
+    "stream": false,
+    "util": false
+  },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",
-    "tailwindcss": "^4.0.0"
+    "tailwindcss": "^3.4.17"
   }
 }

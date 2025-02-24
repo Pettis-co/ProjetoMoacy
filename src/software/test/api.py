@@ -2,6 +2,8 @@ import threading
 from flask import Flask, json, jsonify, request
 import paho.mqtt.client as mqtt
 from flask_cors import CORS
+import json
+import data_store 
 
 app = Flask(__name__)
 CORS(app)
@@ -25,9 +27,6 @@ topics = {
     }
 }
 
-data_store = {
-    "feeding_time": None  
-}
 
 
 mqtt_client = mqtt.Client()
@@ -73,19 +72,18 @@ def setAnimalMedicalHistory():
 @app.route('/pet/time', methods=['GET', 'POST'])
 def timeToEat():
     if request.method == 'GET':
-        if data_store["feeding_time"]:
-            json_data = json.dumps(data_store)
-
-            mqtt_client.publish("pet/time", json_data)
-            return jsonify({'status': 'success', 'feeding_time': data_store["feeding_time"]})
+        if "feeding_time" in data_store.data_store:
+            json_data = json.dumps(data_store.data_store)
+            return jsonify({'status': 'success', 'feeding_time': data_store.data_store["feeding_time"]})
         else:
             return jsonify({'status': 'success', 'message': 'Feeding time not set yet'})
 
     elif request.method == 'POST':
         data = request.json
         if 'feeding_time' in data:
-            data_store["feeding_time"] = data['feeding_time']
-            return jsonify({'status': 'success', 'message': 'Feeding time updated', 'feeding_time': data_store["feeding_time"]})
+            data_store.data_store["feeding_time"] = data['feeding_time']
+            data_store.save_data()  # Salva no arquivo JSON
+            return jsonify({'status': 'success', 'message': 'Feeding time updated', 'feeding_time': data_store.data_store["feeding_time"]})
         else:
             return jsonify({'status': 'error', 'message': 'No feeding_time provided'}), 400
 
