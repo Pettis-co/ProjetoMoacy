@@ -3,7 +3,7 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile-api
-    image: "api-${DOCKER_TAG}"
+    image: "nova-api-${DOCKER_TAG}"
     container_name: pettisco_api 
     ports:
       - 24300:5000
@@ -11,6 +11,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-frontend
-    image: "frontend-${DOCKER_TAG}"
+    image: "novo-frontend-${DOCKER_TAG}"
     ports:
       - 15786:3000
