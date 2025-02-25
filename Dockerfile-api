@@ -7,8 +7,7 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./src/software/test/api.py .
-COPY ./src/software/test/main.html .
+COPY ./src/software/test/* .
 
 ENV FLASK_APP=api.py
 ENV FLASK_RUN_HOST=0.0.0.0
