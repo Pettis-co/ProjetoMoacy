@@ -7,7 +7,7 @@ import MeuGraficoPizza from './GraficoPizza';
 
 const fetchFeedingTime = async () => {
   try {
-    const response = await fetch('http://127.0.0.1:24300/pet/time');
+    const response = await fetch('http://150.165.85.30:24300/pet/time');
     if (!response.ok) throw new Error(`Erro ao buscar dados: ${response.statusText}`);
     const data = await response.json();
     console.error('horário:', data.feeding_time);
@@ -20,7 +20,7 @@ const fetchFeedingTime = async () => {
 
 const sendFeedingTime = async (time) => {
   try {
-    const response = await fetch('http://127.0.0.1:24300/pet/time', {
+    const response = await fetch('http://150.165.85.30:24300/pet/time', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ feeding_time: time }),
@@ -36,7 +36,7 @@ const sendFeedingTime = async (time) => {
 
 const feedNow = async () => {
   try {
-    const response = await fetch('http://127.0.0.1:24300/pet/feed', {
+    const response = await fetch('http://150.165.85.30:24300/pet/feed', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ feed_now: true }),
