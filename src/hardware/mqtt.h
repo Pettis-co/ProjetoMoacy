@@ -6,8 +6,9 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <stdlib.h>
-#include "step.h"
-#include "hx711.h"
+// #include "step.h"
+// #include "hx711.h"
+// #include "feed.h"
 #include "my_time.h"
 #include "connectivity.h"
 

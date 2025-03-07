@@ -1,13 +1,16 @@
 #include "mqtt.h"
 
+
 void setup() {
+  // const char* setup_str = "{\"timesPerDay\": \"5\", \"totalOnDay\": \"500\", \"portion\": \"100\", \"firstAlarm\": \"19:00\"}"
   Serial.begin(115200);
 
   // setup connectivity
   taskWiFiServer();
   setupMQTT();
-  // setupBalance();
+  setupBalance();
   // readBalance();
+  // client.publish("pet/setup", setup_str);
 
   timeClient.begin();
   timeClient.update();

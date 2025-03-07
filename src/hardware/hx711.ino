@@ -7,7 +7,7 @@ void calibrate(int base) {
 void setupBalance() {
   Serial.println("Configurando balanca");
   scale.begin(PIN_DT, PIN_SCK);  
-  scale.set_scale(); // zera a escala da balanca     
+  scale.set_scale(ESCALA); // zera a escala da balanca     
 
   // vTaskDelay(pdMS_TO_TICKS(2000));
   scale.tare();  
@@ -18,7 +18,7 @@ void setupBalance() {
 
 float readBalance() {
   Serial.println("Lendo balanca");
-  float result = scale.get_units(5);
+  float result = scale.get_units(10);
   Serial.print("Resultado: ");
   Serial.println(result);
   return result;

@@ -4,6 +4,7 @@
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 #include <RTClib.h>
+#include "feed.h"
 
 WiFiUDP udp;
 NTPClient timeClient(udp, "a.st1.ntp.br", -3 * 3600, 60000); 

@@ -6,6 +6,8 @@
 #define PIN_DT  21
 #define PIN_SCK  18
 
+const float ESCALA = 317.91;
+
 HX711 scale;
 
 float medida = 0;

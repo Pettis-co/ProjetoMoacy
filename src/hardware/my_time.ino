@@ -21,6 +21,7 @@ void checkAlarms() {
         if (now >= alarms[i]) {
             // Disparar o evento
             Serial.println("Alarme disparado!");
+            openTheDoor();
             // Aqui você pode adicionar o código para disparar o evento
 
             // Recalcular o próximo alarme

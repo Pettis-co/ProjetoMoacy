@@ -3,7 +3,7 @@
 
 #include <Stepper.h>
 
-int steps = 2048;
+int steps = 4096;
 
 const int IN_1 = 23;
 const int IN_2 = 25;
