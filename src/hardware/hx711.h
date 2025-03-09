@@ -19,8 +19,6 @@ void calibrate(int base);
 
 float readBalance();
 
-void powerOn();
-void powerOff();
-void restart();
+void balanceService(char* payload);
 
 #endif

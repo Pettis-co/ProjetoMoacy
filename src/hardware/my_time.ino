@@ -21,7 +21,9 @@ void checkAlarms() {
         if (now >= alarms[i]) {
             // Disparar o evento
             Serial.println("Alarme disparado!");
-            openTheDoor();
+            client.publish("pet/feed/response", "Alarme disparado, aguardando alimentação");
+            client.publish("pet/feed", "");
+            // openTheDoor();
             // Aqui você pode adicionar o código para disparar o evento
 
             // Recalcular o próximo alarme

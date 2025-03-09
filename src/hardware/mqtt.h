@@ -3,15 +3,16 @@
 
 #define LED_BUILTIN 26
 
-#include <PubSubClient.h>
+// #include <PubSubClient.h>
+// #include "hx711.h"
+// #include "connectivity.h"
+// #include "step.h"
+// #include "feed.h"
+
+#include "my_time.h"
 #include <ArduinoJson.h>
 #include <stdlib.h>
-// #include "step.h"
-// #include "hx711.h"
-// #include "feed.h"
-#include "my_time.h"
-#include "connectivity.h"
-
+#include "mqtt_dependencies.h"
 
 // MQTT Broker
 const char *mqtt_broker = "150.165.85.30";
@@ -33,9 +34,9 @@ typedef struct Command_T {
   void (*command)(char*);
 } Command;
 
-void feed(char* payload);
+// void feed(char* payload);
+// void balanceService(char* payload);
 void alarmService(char* payload);
-void balanceService(char* payload);
 void setupService(char* payload);
 
 Command commands[] = {
@@ -46,11 +47,10 @@ Command commands[] = {
 
 int size = (int)sizeof(commands)/sizeof(commands[0]);
 
-WiFiClient espClient;
-PubSubClient client(espClient);
+// WiFiClient espClient;
+// PubSubClient client(espClient);
 
 void setupMQTT();
 void callback(char *topic, byte *payload, unsigned int length);
-void taskMqttClient(void* pvParameters);
 
 #endif

@@ -4,6 +4,17 @@ void calibrate(int base) {
   // sera usada pra auto calibar a balanca
 }
 
+void balanceService(char* payload) {
+  // blinkLed();
+  char buffer[15];
+
+  // readBalance();
+  dtostrf(readBalance(), 10, 2, buffer);
+
+  Serial.printf("%s", buffer);
+  client.publish("pet/balance/response", buffer);
+}
+
 void setupBalance() {
   Serial.println("Configurando balanca");
   scale.begin(PIN_DT, PIN_SCK);  

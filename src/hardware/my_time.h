@@ -5,6 +5,7 @@
 #include <WiFiUdp.h>
 #include <RTClib.h>
 #include "feed.h"
+#include "mqtt_dependencies.h"
 
 WiFiUDP udp;
 NTPClient timeClient(udp, "a.st1.ntp.br", -3 * 3600, 60000); 
@@ -16,7 +17,7 @@ int alarmCount = 0;
 // Mutex para sincronização de acesso aos alarmes
 SemaphoreHandle_t alarmMutex = xSemaphoreCreateMutex();
 TaskHandle_t AlarmHandle;
-TaskHandle_t MqttLoopHandle;
+// TaskHandle_t MqttLoopHandle;
 
 void setAlarms(DateTime firstAlarm, int numberOfAlarms);
 
