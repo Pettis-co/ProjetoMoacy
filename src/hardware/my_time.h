@@ -3,19 +3,28 @@
 
 #include <NTPClient.h>
 #include <WiFiUdp.h>
-#include <time.h>
-#include <ESP32Time.h>
+#include <RTClib.h>
+#include "feed.h"
+#include "mqtt_dependencies.h"
 
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP);
-ESP32Time rtc(0); 
+WiFiUDP udp;
+NTPClient timeClient(udp, "a.st1.ntp.br", -3 * 3600, 60000); 
 
-// Variables to save date and time
-String formattedDate;
-String dayStamp;
-String timeStamp;
+const int maxAlarms = 10;
+DateTime alarms[maxAlarms];
+int alarmCount = 0;
 
-void setAlarm();
-void setupTime();
+// Mutex para sincronização de acesso aos alarmes
+SemaphoreHandle_t alarmMutex = xSemaphoreCreateMutex();
+TaskHandle_t AlarmHandle;
+// TaskHandle_t MqttLoopHandle;
+
+void setAlarms(DateTime firstAlarm, int numberOfAlarms);
+
+// Função para verificar e disparar os alarmes
+void checkAlarms();
+
+// Tarefa para gerenciar o tempo e os alarmes (executada no Core 0)
+void taskAlarmManager(void* parameter);
 
 #endif

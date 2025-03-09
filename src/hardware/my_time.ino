@@ -1,43 +1,47 @@
-/*********
-  Rui Santos
-  Complete project details at https://randomnerdtutorials.com
-  Based on the NTP Client library example
-*********/
+// #include "my_time.h"
 
-#include "my_time.h"
+void setAlarms(DateTime firstAlarm, int numberOfAlarms) {
+    xSemaphoreTake(alarmMutex, portMAX_DELAY); // Bloqueia o acesso aos alarmes
+    alarmCount = numberOfAlarms;
+    int interval = 24 * 60 * 60 / numberOfAlarms; // Intervalo em segundos
 
-void setupTime() {
-
-// Initialize a NTPClient to get time
-  timeClient.begin();
-  // Set offset time in seconds to adjust for your timezone, for example:
-  // GMT +1 = 3600
-  // GMT +8 = 28800
-  // GMT -1 = -3600
-  // GMT 0 = 0
-  timeClient.setTimeOffset(-10800);
-
-  while(!timeClient.update()) {
-    timeClient.forceUpdate();
-  }
-
-  struct tm dateTime;
-  long epoch = timeClient.getEpochTime();
-
-  rtc.setTime(epoch);  // 17th Jan 2021 15:24:30
+    for (int i = 0; i < numberOfAlarms; i++) {
+        // Adiciona o intervalo em segundos ao horário inicial
+        alarms[i] = firstAlarm + interval * i;
+    }
+    xSemaphoreGive(alarmMutex); // Libera o acesso aos alarmes
 }
 
-void setAlarm() {
-  // função pra settar o alarme
-  // rtc.setAlarm("00:00:10");
-  Serial.println("============");
-  Serial.println(rtc.getDateTime(true));
-  Serial.println("============");
-  // Attach interrupt for alarm
-  // rtc.attachInterrupt(alarmISR);
-  return ;
+// Função para verificar e disparar os alarmes
+void checkAlarms() {
+    DateTime now = timeClient.getEpochTime();
+
+    xSemaphoreTake(alarmMutex, portMAX_DELAY); // Bloqueia o acesso aos alarmes
+    for (int i = 0; i < alarmCount; i++) {
+        if (now >= alarms[i]) {
+            // Disparar o evento
+            Serial.println("Alarme disparado!");
+            client.publish("pet/feed/response", "Alarme disparado, aguardando alimentação");
+            client.publish("pet/feed", "");
+            // openTheDoor();
+            // Aqui você pode adicionar o código para disparar o evento
+
+            // Recalcular o próximo alarme
+            alarms[i] = alarms[i] + 24 * 60 * 60; // Adiciona 24 horas
+        }
+    }
+    xSemaphoreGive(alarmMutex); // Libera o acesso aos alarmes
 }
 
-void IRAM_ATTR alarmISR() {
-  Serial.println("Alarm triggered!");
+// Tarefa para gerenciar o tempo e os alarmes (executada no Core 0)
+void taskAlarmManager(void* parameter) {
+    while (true) {
+        // Atualizar o tempo
+        timeClient.update();
+
+        // Verificar e disparar os alarmes
+        checkAlarms();
+
+        vTaskDelay(pdMS_TO_TICKS(1000)); // Verificar a cada segundo
+    }
 }
