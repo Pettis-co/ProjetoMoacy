@@ -28,7 +28,7 @@ void setupMQTT() {
     client.subscribe(commands[i].key);
   }
 
-  client.publish("teste", "Mqtt broker online e conectado na placa");
+  // client.publish("teste", "Mqtt broker online e conectado na placa");
 }
 
 DateTime stringToDateTime(String horaString) {
@@ -57,14 +57,11 @@ void deserializeJson(const String& json) {
     return;
   }
 
-
   // Preenche a estrutura FeedConfig com os dados do JSON
   config.timesPerDay = doc["timesPerDay"];
   config.totalOnDay = doc["totalOnDay"];
   config.portion = doc["portion"];
   config.firstAlarm = stringToDateTime(doc["firstAlarm"].as<String>());
-
-  // Serial.println(config.portion);
 }
 
 void callback(char *topic, byte *payload, unsigned int length) {
@@ -75,41 +72,11 @@ void callback(char *topic, byte *payload, unsigned int length) {
   }
 }
 
-// void openTheDoor() {
-//   float balance = readBalance();
-//   while (balance <= config.portion) {
-//     float proportion = balance / config.portion;
-//     // spin(steps);
-
-//     if (proportion <= 0.10) {
-//       spin(steps);
-//     } else if (proportion <= 0.25) {
-//       spin(div(steps, 4).quot * 3);
-//     } else if (proportion <= 0.50) {
-//       spin(div(steps, 2).quot);
-//     } else if (proportion <= 0.75) {
-//       spin(div(steps, 4).quot);
-//     } else{
-//       spin(div(steps, 10).quot);
-//     }
-
-//     balance = readBalance(); 
-    
-//   } 
-// }
-
 void feed(char* payload) {
   openTheDoor();
   // Serial.println("AAAAAAAAAAA");
   client.publish("pet/feed/response", "Comporta aberta, animal servido!");
 }
-
-// void alarmService(char* payload) {
-//   // deve apenas configurar o alarme
-//   // deve dessrializar a hora
-//   // setAlarm();
-//   client.publish("pet/time/response", "Alarme configurado, bem na hora!");
-// }
 
 void balanceService(char* payload) {
   // blinkLed();

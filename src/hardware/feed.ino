@@ -1,8 +1,10 @@
 void openTheDoor() {
   float balance = readBalance();
-  while (balance <= config.portion) {
+  while (balance < config.portion) {
     float proportion = balance / config.portion;
-    // spin(steps);
+    Serial.print("Protion: ");
+    Serial.println(proportion);
+    Serial.println();
 
     if (proportion <= 0.10) {
       spin(steps);

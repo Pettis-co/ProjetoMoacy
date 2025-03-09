@@ -69,7 +69,7 @@ void connectToWifi() {
 
 void taskWiFiServer() {
   connectToWifi();
-  
+
   while (!WiFi.isConnected()) {
     server.handleClient();
   }
