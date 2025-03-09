@@ -1,0 +1,6 @@
+--- 
+- name: Setup and configure Grafana server 
+  hosts: hivemq.lsd.ufcg.edu.br
+  become: true
+  roles:
+    - role: grafana

@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  grafana:
+    image: {{ grafana_image }}
+    container_name: grafana
+    restart: always
+    ports:
+      - 9800:3000
+    volumes:
+      - {{ grafana_service_path }}:{{ grafana_dest_path }}
