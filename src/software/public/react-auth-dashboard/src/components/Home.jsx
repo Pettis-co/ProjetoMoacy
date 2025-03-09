@@ -4,51 +4,9 @@ import "../styles/Home.css";
 import MeuGrafico from './Graficos';
 import MeuGraficoBarras from './GraficoBarras';
 import MeuGraficoPizza from './GraficoPizza';
+import axios from "axios";
 
-const fetchFeedingTime = async () => {
-  try {
-    const response = await fetch('http://150.165.85.30:24300/pet/time');
-    if (!response.ok) throw new Error(`Erro ao buscar dados: ${response.statusText}`);
-    const data = await response.json();
-    console.error('horário:', data.feeding_time);
-    return data.feeding_time || 'Not Set';
-  } catch (error) {
-    console.error('Erro ao buscar horário:', error);
-    return 'Not Set';
-  }
-};
-
-const sendFeedingTime = async (time) => {
-  try {
-    const response = await fetch('http://150.165.85.30:24300/pet/time', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ feeding_time: time }),
-    });
-
-    if (!response.ok) throw new Error(`Erro ao enviar horário: ${response.statusText}`);
-    return await response.json();
-  } catch (error) {
-    console.error('Erro ao enviar horário:', error);
-    throw error;
-  }
-};
-
-const feedNow = async () => {
-  try {
-    const response = await fetch('http://150.165.85.30:24300/pet/feed', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ feed_now: true }),
-    });
-
-    if (!response.ok) throw new Error(`Erro ao enviar comando: ${response.statusText}`);
-    return await response.json();
-  } catch (error) {
-    console.error('Erro ao enviar "Comer Agora":', error);
-    throw error;
-  }
-};
+const API_URL = "http://150.165.85.30:24300/data";
 
 function Home() {
   const { user, logout } = useAuth();
@@ -57,26 +15,84 @@ function Home() {
   const [showLogout, setShowLogout] = useState(false);
   const [selectedFrequency, setSelectedFrequency] = useState(2);
   const [showFrequencyDropdown, setShowFrequencyDropdown] = useState(false);
+  const [isEditingTime, setIsEditingTime] = useState(false);
+  const [isEditingWeight, setIsEditingWeight] = useState(false);
+  const [newWeight, setNewWeight] = useState('');
+  const [currentWeight, setCurrentWeight] = useState('12');
 
+
+  const [feedingData, setFeedingData] = useState({
+    timesOnDay: 0.0,
+    totalOnDay: 0.0,
+    portion: 0.0,
+    firstAlarm: "00:00",
+  });
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [newData, setNewData] = useState(feedingData);
+
+  // Buscar os dados iniciais
   useEffect(() => {
-    const loadData = async () => {
-      const time = await fetchFeedingTime();
-      setCurrentFeedingTime(time);
+    const fetchInitialData = async () => {
+      try {
+        const response = await axios.get(API_URL);
+        setFeedingData(response.data);
+        setNewData(response.data);
+        setCurrentFeedingTime(response.data.firstAlarm || 'Not Set');
+        setCurrentWeight(response.data.portion || '12');
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      }
     };
-    loadData();
+    fetchInitialData();
   }, []);
 
+
+  // Atualizar um campo específico
+  const handleChange = (field, value) => {
+    setNewData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Enviar atualização para a API
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await sendFeedingTime(newFeedingTime);
-      const updatedTime = await fetchFeedingTime();
-      setCurrentFeedingTime(updatedTime);
-      setNewFeedingTime('');
+      const response = await axios.post(API_URL, { 
+        firstAlarm: newFeedingTime 
+      });
+
+      console.log(response)
+      setCurrentFeedingTime(response.data.data.firstAlarm);
+      setIsEditingTime(false);
     } catch (error) {
-      console.error('Falha ao atualizar horário:', error);
+      console.error("Erro ao atualizar horário:", error);
     }
   };
+
+  const handleWeightSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post(API_URL, { portion: parseFloat(newWeight) });
+      console.log(response)
+      setCurrentWeight(response.data.data.portion?.toString());
+      setIsEditingWeight(false);
+    } catch (error) {
+      console.error("Erro ao enviar peso da porção:", error);
+    }
+  };
+
+  // Acionar "Comer Agora"
+  const feedNow = async () => {
+    try {
+      const response = await axios.post("http://150.165.85.30:24300/pet/feed", {
+        feed_now: true,
+      });
+      console.log("Resposta do feed:", response.data);
+    } catch (error) {
+      console.error("Erro ao enviar 'Comer Agora':", error);
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -153,7 +169,7 @@ function Home() {
         </div>
       </header>
   
-      <main className="p-5 max-w-7xl mx-auto flex-1 h-full">
+      <main className="p-5 max-w-7xl mx-auto flex-1 h-full w-full">
       <div className="flex items-center justify-between w-full max-w-2xl  mb-6">
           <h2 className="text-4xl font-bold text-gray-600 tracking-tight">
             Monitore a saúde do seu pet.
@@ -185,60 +201,121 @@ function Home() {
 
   
         {/* Seção de controles */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <div className="bg-white p-6 rounded-2xl shadow-md md:col-span-2 lg:col-span-1">
-            <p className="text-gray-600 mb-2 font-bold">Horário da primeira alimentação</p>
-            <div className="text-3xl text-center font-bold text-teal-600">
-              {currentFeedingTime} ▼
-            </div>
-          </div>
-  
-          <form 
-            onSubmit={handleSubmit}
-            className="bg-white p-6 rounded-2xl shadow-md md:col-span-2 lg:col-span-1"
-          >
-            <input
-              type="time"
-              value={newFeedingTime}
-              onChange={(e) => setNewFeedingTime(e.target.value)}
-              className="w-full text-center text-2xl border-b-2 border-gray-200 focus:border-teal-500 outline-none"
-            />
-            <button
-              type="submit"
-              className="mt-4 w-full bg-teal-500 text-white py-2 rounded-lg hover:bg-teal-600 transition-colors"
-            >
-              Atualizar Horário
-            </button>
-          </form>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
+          {/* Horário da alimentação */}
+          <div className="bg-white p-6 rounded-xl shadow-md border border-teal-100 hover:shadow-lg transition-all duration-300">
+            <p className="text-teal-600 mb-2 text-sm uppercase tracking-wide font-semibold">
+              Horário da alimentação
+            </p>
 
-          <div className="bg-white p-6 rounded-2xl shadow-md md:col-span-2 lg:col-span-1">
-            <p className="text-gray-600 mb-2 font-bold">Porcentagem de Ração no pote</p>
-            <div className="text-3xl text-center font-bold text-red-600">
-              10 % ▼
-            </div>
+            {isEditingTime ? (
+              <form onSubmit={handleSubmit} className="animate-fade-in">
+                <input
+                  type="time"
+                  value={newFeedingTime}
+                  onChange={(e) => setNewFeedingTime(e.target.value)}
+                  className="w-full text-center text-xl border-b border-teal-400 focus:border-teal-600 outline-none transition-all bg-teal-50 rounded-lg py-2"
+                  autoFocus
+                />
+                <div className="flex gap-2 mt-4">
+                  <button
+                    type="submit"
+                    className="w-full py-2 rounded-lg bg-teal-500 text-white hover:bg-teal-600 transition-all"
+                  >
+                    Salvar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingTime(false)}
+                    className="w-full py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div
+                className="text-2xl text-center font-bold text-teal-600 cursor-pointer hover:bg-teal-50 rounded-lg py-2 transition-all"
+                onClick={() => setIsEditingTime(true)}
+              >
+                {currentFeedingTime} ▼
+              </div>
+            )}
           </div>
 
-          <div className="bg-white p-6 rounded-2xl shadow-md md:col-span-2 lg:col-span-1 relative">
-            <p className="text-gray-600 mb-2 font-bold">Periodicidade da alimentação</p>
-            
-            <div 
-              className="text-3xl text-center font-bold text-teal-600 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors py-2"
+          {/* Ração no pote */}
+          <div className="bg-white p-6 rounded-xl shadow-md border border-red-100 hover:shadow-lg transition-all duration-300">
+            <p className="text-red-600 mb-2 text-sm uppercase tracking-wide font-semibold">Ração no pote</p>
+            <div className="text-3xl text-center font-bold text-red-500">10% ▼</div>
+          </div>
+
+          {/* Peso por porção */}
+          <div className="bg-white p-6 rounded-xl shadow-md border border-purple-100 hover:shadow-lg transition-all duration-300">
+            <p className="text-purple-600 mb-2 text-sm uppercase tracking-wide font-semibold">Peso por porção</p>
+            {isEditingWeight ? (
+              <form onSubmit={handleWeightSubmit} className="animate-fade-in">
+                <input
+                  type="number"
+                  value={newWeight}
+                  onChange={(e) => setNewWeight(e.target.value)}
+                  className="w-full text-center text-xl border-b border-purple-400 focus:border-purple-600 outline-none transition-all bg-purple-50 rounded-lg py-2"
+                  placeholder="Digite o peso (g)"
+                  autoFocus
+                />
+                <div className="flex gap-2 mt-4">
+                  <button
+                    type="submit"
+                    className="w-full py-2 rounded-lg bg-purple-500 text-white hover:bg-purple-600 transition-all"
+                  >
+                    Salvar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingWeight(false)}
+                    className="w-full py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div
+                className="text-3xl text-center font-bold text-purple-600 cursor-pointer hover:bg-purple-50 rounded-lg py-2 transition-all"
+                onClick={() => setIsEditingWeight(true)}
+              >
+                {currentWeight}g ▼
+              </div>
+            )}
+          </div>
+
+          {/* Periodicidade */}
+          <div className="bg-white p-6 rounded-xl shadow-md border border-teal-100 hover:shadow-lg transition-all duration-300 relative">
+            <p className="text-teal-600 mb-2 text-sm uppercase tracking-wide font-semibold">Periodicidade</p>
+            <div
+              className="text-2xl text-center font-bold text-teal-600 cursor-pointer hover:bg-teal-50 rounded-lg py-2 transition-all"
               onClick={() => setShowFrequencyDropdown(!showFrequencyDropdown)}
             >
               {selectedFrequency} x ▼
             </div>
 
             {showFrequencyDropdown && (
-              <div className="absolute top-full left-0 w-full bg-white mt-2 rounded-lg shadow-lg border border-gray-100 z-50 animate-scale-in">
+              <div className="absolute top-full left-0 w-full bg-white mt-2 rounded-lg shadow-lg border border-teal-100 z-50 animate-scale-in">
                 {[1, 2, 3, 4, 5].map((num) => (
                   <button
                     key={num}
-                    onClick={() => {
+                    onClick={async () => {
                       setSelectedFrequency(num);
                       setShowFrequencyDropdown(false);
+                      try {
+                        const response = await axios.post(API_URL, { timesOnDay: num });
+                        setSelectedFrequency(response.data.data.timesOnDay); // Atualiza com o valor salvo
+                      } catch (error) {
+                        console.error("Erro ao atualizar periodicidade:", error.response?.data || error.message);
+                      }
                     }}
-                    className={`w-full py-3 px-4 text-lg font-semibold hover:bg-red-50 transition-colors
-                      ${num === selectedFrequency ? 'text-red-600 bg-red-100' : 'text-gray-700'}`}
+                    className={`w-full py-3 text-center text-lg hover:bg-teal-50 transition-all ${
+                      num === selectedFrequency ? 'text-teal-600 bg-teal-100' : 'text-gray-700'
+                    }`}
                   >
                     {num} x
                   </button>
@@ -247,7 +324,9 @@ function Home() {
             )}
           </div>
 
-         </div>
+        </div>
+
+
 
         {/* Seção de gráficos */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
