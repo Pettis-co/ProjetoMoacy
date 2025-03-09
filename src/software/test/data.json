@@ -1,1 +1,6 @@
-{"feeding_time": "07:00"}
+{
+    "firstAlarm": "19:24",
+    "portion": 50,
+    "timesPerDay": 3,
+    "totalOnDay": 0.0
+}
