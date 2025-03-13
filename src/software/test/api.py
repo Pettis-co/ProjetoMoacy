@@ -12,6 +12,7 @@ USERNAME = ''
 PASSWORD = ''
 PORT = 1883
 TOPICO = "teste"
+balanca = 0.0
 
 topics = {
     'client': {
@@ -31,17 +32,24 @@ mqtt_client = mqtt.Client()
 def on_connect(client, userdata, flags, rc):
     
     print("Conectado ao broker com código de resultado:", rc)
+    client.subscribe("pet/balance/response")
     client.subscribe(TOPICO)
 
 def on_message(client, userdata, msg):
     if msg.topic == "teste":
         global data_store
         mqtt_client.publish("pet/setup", json.dumps(data_store))
+        mqtt_client.publish("pet/balance")
+    if msg.topic == "pet/balance/response":
+       
+        global balanca
+        balanca = float(msg.payload.decode())
         
     print(f"Mensagem recebida: {msg.topic} -> {msg.payload.decode()}")
 
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
+
 
 def run_mqtt():
     mqtt_client.connect(BROKER, PORT)  # Adicione a porta aqui
@@ -153,6 +161,12 @@ def openTheDoor():
         else:
             return jsonify({'status': 'error', 'message': 'Comando inválido ou ausente'}), 400
     return jsonify({'status': 'success', 'message': 'GET request received'})
+
+@app.route('/pet/balance', methods=['GET'])
+def balance():
+    mqtt_client.publish("pet/balance")
+    return jsonify({'status': 'success', 'balance': balanca})
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=24300)
