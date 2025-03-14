@@ -72,23 +72,6 @@ void callback(char *topic, byte *payload, unsigned int length) {
   }
 }
 
-// void feed(char* payload) {
-//   openTheDoor();
-//   // Serial.println("AAAAAAAAAAA");
-//   client.publish("pet/feed/response", "Comporta aberta, animal servido!");
-// }
-
-// void balanceService(char* payload) {
-//   // blinkLed();
-//   char buffer[15];
-
-//   // readBalance();
-//   dtostrf(readBalance(), 10, 2, buffer);
-
-//   Serial.printf("%s", buffer);
-//   client.publish("pet/balance/response", buffer);
-// }
-
 void setupService(char* payload) {
   deserializeJson(payload);
 

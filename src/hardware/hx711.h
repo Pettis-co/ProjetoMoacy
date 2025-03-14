@@ -2,6 +2,7 @@
 #define HX711_H
 
 #include <HX711.h>
+// #include "mqtt_dependencies.h"
 
 #define PIN_DT  21
 #define PIN_SCK  18

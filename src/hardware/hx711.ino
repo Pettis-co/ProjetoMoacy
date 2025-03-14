@@ -32,5 +32,6 @@ float readBalance() {
   float result = scale.get_units(10);
   Serial.print("Resultado: ");
   Serial.println(result);
+  
   return result;
 }
