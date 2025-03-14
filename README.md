@@ -1,6 +1,6 @@
 # Pettisco
 
-**Descrição:** Pettisco é uma aplicação web desenvolvida para [descrever a funcionalidade principal do projeto]. Este projeto utiliza uma arquitetura de microsserviços, com componentes de frontend e backend, e incorpora automações de deployment para facilitar a implantação contínua.
+**Descrição:** Pettisco é uma aplicação web desenvolvida para alimentar pets de forma automaitizada. Este projeto utiliza uma arquitetura de microsserviços, com componentes de frontend e backend, e incorpora automações de deployment para facilitar a implantação contínua.
 
 ## Estrutura do Projeto
 
